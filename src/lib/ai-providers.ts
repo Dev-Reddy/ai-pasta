@@ -4,7 +4,7 @@ export const AI_PROVIDERS: Record<string, AIProviderConfig> = {
   openai: {
     id: "openai",
     name: "OpenAI",
-    icon: "OP",
+    icon: "/providers/openai.svg",
     color: "bg-green-500",
     models: ["gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-4.1", "o3-deep-research", "o4-mini-deep-research", "gpt-4o"],
     defaultModel: "gpt-5",
@@ -12,7 +12,7 @@ export const AI_PROVIDERS: Record<string, AIProviderConfig> = {
   claude: {
     id: "claude",
     name: "Claude",
-    icon: "CL",
+    icon: "/providers/claude.svg",
     color: "bg-orange-500",
     models: ["claude-opus-4-1-20250805", "claude-opus-4-20250514", "claude-sonnet-4-20250514", "claude-3-7-sonnet-20250219", "claude-3-5-haiku-20241022", "claude-3-haiku-20240307"],
     defaultModel: "claude-sonnet-4-20250514",
@@ -20,7 +20,7 @@ export const AI_PROVIDERS: Record<string, AIProviderConfig> = {
   gemini: {
     id: "gemini",
     name: "Gemini",
-    icon: "GE",
+    icon: "/providers/gemini.svg",
     color: "bg-blue-500",
     models: ["gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash", "gemini-2.0-flash-lite"],
     defaultModel: "gemini-2.5-pro",
@@ -28,7 +28,7 @@ export const AI_PROVIDERS: Record<string, AIProviderConfig> = {
   grok: {
     id: "grok",
     name: "Grok",
-    icon: "GR",
+    icon: "/providers/grok.svg",
     color: "bg-gray-500",
     models: ["grok-4-latest", "grok-3", "grok-3-mini"],
     defaultModel: "grok-4-latest",
@@ -36,7 +36,7 @@ export const AI_PROVIDERS: Record<string, AIProviderConfig> = {
   deepseek: {
     id: "deepseek",
     name: "DeepSeek",
-    icon: "DE",
+    icon: "/providers/deepseek.svg",
     color: "bg-purple-500",
     models: ["deepseek-chat", "deepseek-reasoner"],
     defaultModel: "deepseek-chat",
@@ -44,7 +44,7 @@ export const AI_PROVIDERS: Record<string, AIProviderConfig> = {
   perplexity: {
     id: "perplexity",
     name: "Perplexity",
-    icon: "PE",
+    icon: "/providers/perplexity.svg",
     color: "bg-indigo-500",
     models: ["sonar-pro", "sonar"],
     defaultModel: "sonar-pro",

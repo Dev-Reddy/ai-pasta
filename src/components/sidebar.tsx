@@ -16,6 +16,7 @@ import {
   Edit,
   Menu,
   X,
+  Key,
 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
@@ -83,9 +84,9 @@ export function Sidebar({
             variant="ghost"
             size="icon"
             onClick={onOpenSettings}
-            className="h-8 w-8 text-gray-400 hover:bg-gray-800 hover:text-white"
+            className="h-8 w-8 text-white hover:bg-gray-800 hover:text-white"
           >
-            <Settings className="h-4 w-4" />
+            API <Key className="h-4 w-4" />
           </Button>
         )}
       </div>
@@ -108,7 +109,7 @@ export function Sidebar({
             className="h-10 w-10 text-gray-400 hover:bg-gray-800 hover:text-white"
             title="Settings"
           >
-            <Settings className="h-4 w-4" />
+            <Key className="h-4 w-4" />
           </Button>
 
           {projects.length > 0 && <div className="w-8 h-px bg-gray-700 my-2" />}
