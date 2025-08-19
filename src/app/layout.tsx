@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
+import { Toaster as Sonner } from "sonner";
 
 export const metadata: Metadata = {
   title: "AI Pasta - Multi-AI Chat Interface",
@@ -25,7 +26,10 @@ html {
 }
         `}</style>
       </head>
-      <body className="dark bg-background text-foreground">{children}</body>
+      <body className="dark bg-background text-foreground">
+        {children}
+        <Sonner />
+      </body>
     </html>
   );
 }
