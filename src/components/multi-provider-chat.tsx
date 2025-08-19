@@ -320,7 +320,7 @@ export const MultiProviderChat = forwardRef<
       // Do not append again; it is already stored and included by getMessages ordering
 
       const systemContext = currentProject?.systemContext || ""
-      const modelLabel = chatState.selectedModels[provider]
+      const model = chatState.selectedModels[provider]
 
       const response = await fetch(`/api/chat/${provider}`, {
         method: "POST",
@@ -329,7 +329,7 @@ export const MultiProviderChat = forwardRef<
           messages: providerHistory,
           apiKey,
           systemContext: currentProjectId ? systemContext : "",
-          modelLabel,
+          model,
         }),
       })
 
@@ -425,7 +425,7 @@ export const MultiProviderChat = forwardRef<
             { role: "user", content: firstMessage },
           ],
           apiKey,
-          modelLabel: SMALL_MODEL_ID[chosenProvider],
+          model: SMALL_MODEL_ID[chosenProvider],
         }),
       })
       if (!response.ok) return
@@ -602,7 +602,7 @@ export const MultiProviderChat = forwardRef<
                             <div className="border-t border-gray-700 mt-1 pt-1">
                               <div className="px-2 py-1">
                                 <Input
-                                  placeholder="Add custom model..."
+                                  placeholder="Add another model..."
                                   className="h-6 text-xs bg-gray-700 border-gray-600 text-gray-200"
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {

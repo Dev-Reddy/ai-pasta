@@ -4,12 +4,10 @@ import { createOpenAI } from "@ai-sdk/openai"
 import { createAnthropic } from "@ai-sdk/anthropic"
 import { createGoogleGenerativeAI } from "@ai-sdk/google"
 import { createXai } from "@ai-sdk/xai"
-import { resolveModelId, type ProviderId } from "@/lib/model-mapping"
 
 export const maxDuration = 60
 
-function buildModel(provider: ProviderId, modelId: string, apiKey: string) {
-	// Some providers are not directly supported and use OpenAI-compatible APIs.
+function buildModel(provider: string, modelId: string, apiKey: string) {
 	switch (provider) {
 		case "openai": {
 			const openai = createOpenAI({ apiKey })
@@ -35,14 +33,17 @@ function buildModel(provider: ProviderId, modelId: string, apiKey: string) {
 			const openai = createOpenAI({ apiKey, baseURL: "https://api.perplexity.ai" })
 			return openai(modelId)
 		}
+		default:
+			throw new Error("Unsupported provider")
 	}
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function POST(req: Request, context: any) {
 	try {
-		const provider = (context?.params?.provider as ProviderId) || "openai"
-		const { messages, systemContext, apiKey, modelLabel } = await req.json()
+		// Next.js dynamic API params are async; await before use
+		const { provider } = await context.params
+		const { messages, systemContext, apiKey, model } = await req.json()
 
 		if (!provider || !["openai", "claude", "gemini", "grok", "deepseek", "perplexity"].includes(provider)) {
 			return new Response("Unsupported provider", { status: 400 })
@@ -56,20 +57,26 @@ export async function POST(req: Request, context: any) {
 			return new Response("Messages array is required", { status: 400 })
 		}
 
-		const modelId = resolveModelId(provider, modelLabel) || resolveModelId(provider, undefined) || ""
-		if (!modelId) {
-			return new Response("Model not provided", { status: 400 })
+		// Use the model as provided (official IDs only). If missing, choose a sensible provider-specific default.
+		const defaultModelByProvider: Record<string, string> = {
+			openai: "gpt-5",
+			claude: "claude-sonnet-4-20250514",
+			gemini: "gemini-2.5-pro",
+			grok: "grok-4-latest",
+			deepseek: "deepseek-chat",
+			perplexity: "sonar-pro",
 		}
+		const modelId: string = (typeof model === "string" && model.trim()) || defaultModelByProvider[provider]
 
-		const formattedMessages = [] as Array<{ role: string; content: string }>
+		const formattedMessages = [] as Array<{ role: "system" | "user" | "assistant"; content: string }>
 		if (systemContext && typeof systemContext === "string" && systemContext.trim() !== "") {
 			formattedMessages.push({ role: "system", content: systemContext })
 		}
-		formattedMessages.push(...messages)
+		formattedMessages.push(...(messages as Array<{ role: "system" | "user" | "assistant"; content: string }>))
 
 		const result = await streamText({
 			model: buildModel(provider, modelId, apiKey),
-			messages: formattedMessages as { role: "system" | "user" | "assistant"; content: string }[],
+			messages: formattedMessages,
 			temperature: 0.7,
 		})
 
