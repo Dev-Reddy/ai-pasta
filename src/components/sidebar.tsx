@@ -1,6 +1,7 @@
 // components/ui/sidebar.tsx
 "use client";
 
+import icon from "@/assets/icon.png";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -17,7 +18,6 @@ import {
   FolderOpen,
   MoreHorizontal,
   Edit,
-  Menu,
   Key,
   ChevronFirst,
 } from "lucide-react";
@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import type { Project, Chat } from "@/lib/types";
+import Image from "next/image";
 
 interface SidebarProps {
   projects: Project[];
@@ -80,12 +81,12 @@ export function Sidebar({
             variant="ghost"
             size="icon"
             onClick={onToggleCollapse}
-            className="h-8 w-8 text-gray-400 hover:bg-gray-800 hover:text-white"
+            className=" text-gray-400 hover:bg-gray-800 hover:text-white"
           >
             {isCollapsed ? (
-              <Menu className="h-4 w-4" />
+              <Image src={icon} alt="Icon" width={16} height={16} />
             ) : (
-              <Menu className="h-4 w-4" />
+              <Image src={icon} alt="Icon" width={16} height={16} />
             )}
           </Button>
           {!isCollapsed && (

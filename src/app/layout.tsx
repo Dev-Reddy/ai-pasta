@@ -1,19 +1,18 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { GeistSans } from "geist/font/sans"
-import { GeistMono } from "geist/font/mono"
-import "./globals.css"
+import type React from "react";
+import type { Metadata } from "next";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Fiesta - Multi-AI Chat Interface",
+  title: "AI Pasta - Multi-AI Chat Interface",
   description: "Chat with multiple AI models simultaneously",
-  generator: "v0.app",
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" className="dark">
@@ -28,5 +27,5 @@ html {
       </head>
       <body className="dark bg-background text-foreground">{children}</body>
     </html>
-  )
+  );
 }
