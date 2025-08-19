@@ -36,6 +36,21 @@ export const MultiProviderChat = forwardRef<
     singleProviderMode: null,
   })
 
+  // Turn on toggles for providers with API keys on initial render and when keys change
+  useEffect(() => {
+    setChatState((prev) => ({
+      ...prev,
+      activeProviders: availableProviders,
+      isEnabled: Object.fromEntries(
+        Object.keys(AI_PROVIDERS).map((key) => [key, availableProviders.includes(key as AIProvider)]),
+      ) as Record<AIProvider, boolean>,
+      // If currently in single provider mode that is no longer available, reset to multi
+      singleProviderMode: prev.singleProviderMode && availableProviders.includes(prev.singleProviderMode)
+        ? prev.singleProviderMode
+        : null,
+    }))
+  }, [availableProviders])
+
   const [collapsedChats, setCollapsedChats] = useState<Record<AIProvider, boolean>>(() => {
     const initialState: Record<AIProvider, boolean> = {
       openai: false,
