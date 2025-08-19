@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,29 +11,33 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 interface NewProjectDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onCreateProject: (name: string, systemContext: string) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onCreateProject: (name: string, systemContext: string) => void;
 }
 
-export function NewProjectDialog({ open, onOpenChange, onCreateProject }: NewProjectDialogProps) {
-  const [name, setName] = useState("")
-  const [systemContext, setSystemContext] = useState("")
+export function NewProjectDialog({
+  open,
+  onOpenChange,
+  onCreateProject,
+}: NewProjectDialogProps) {
+  const [name, setName] = useState("");
+  const [systemContext, setSystemContext] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (name.trim() && systemContext.trim()) {
-      onCreateProject(name.trim(), systemContext.trim())
-      setName("")
-      setSystemContext("")
+      onCreateProject(name.trim(), systemContext.trim());
+      setName("");
+      setSystemContext("");
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -41,7 +45,8 @@ export function NewProjectDialog({ open, onOpenChange, onCreateProject }: NewPro
         <DialogHeader>
           <DialogTitle>Create New Project</DialogTitle>
           <DialogDescription>
-            Create a new project with a custom system context that will be used for all AI model conversations.
+            Create a new project with a custom system context that will be used
+            for all AI model conversations.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
@@ -63,13 +68,17 @@ export function NewProjectDialog({ open, onOpenChange, onCreateProject }: NewPro
                 value={systemContext}
                 onChange={(e) => setSystemContext(e.target.value)}
                 placeholder="You are a helpful assistant specialized in..."
-                className="min-h-[120px]"
+                className="min-h-[120px] overflow-y-scroll max-h-[300px]"
                 required
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
             <Button type="submit">Create Project</Button>
@@ -77,5 +86,5 @@ export function NewProjectDialog({ open, onOpenChange, onCreateProject }: NewPro
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
