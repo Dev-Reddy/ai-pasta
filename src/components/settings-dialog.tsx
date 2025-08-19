@@ -21,12 +21,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Eye, EyeOff, Trash2 } from "lucide-react";
+import { AlertTriangle, Eye, EyeOff, Trash2 } from "lucide-react";
 import { AI_PROVIDERS } from "@/lib/ai-providers";
 import { db } from "@/lib/database";
 import type { AIProvider, ApiKey } from "@/lib/types";
 import Image from "next/image";
 import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -112,9 +113,34 @@ export function SettingsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Settings</DialogTitle>
+          <DialogTitle>API Keys</DialogTitle>
           <DialogDescription>
             Configure your API keys and application settings.
+            {/* warning div here to tell user that api keys are stored in local storage. use incognito mode to avoid extensions from snooping */}
+            <Alert className="border-red-200 text-red-400 my-2">
+              <AlertTriangle className="h-4 w-4 text-amber-600" />
+              <AlertTitle className="text-amber-800">
+                Security Notice
+              </AlertTitle>
+              <AlertDescription className="text-amber-700 mt-2">
+                <div className="space-y-2">
+                  <p>
+                    API keys are stored locally in your browser and can be
+                    accessed by browser extensions or anyone with access to your
+                    device.
+                  </p>
+                  <div className="text-sm">
+                    <strong>For better security:</strong>
+                    <ul className="mt-1 space-y-1 ml-4 list-disc">
+                      <li>Use incognito/private browsing mode</li>
+                      <li>Create API keys with limited permissions</li>
+                      <li>Regularly rotate your API keys</li>
+                      <li>Avoid using on shared computers</li>
+                    </ul>
+                  </div>
+                </div>
+              </AlertDescription>
+            </Alert>
           </DialogDescription>
         </DialogHeader>
 
