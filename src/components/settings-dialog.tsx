@@ -205,6 +205,7 @@ export function SettingsDialog({
                                 [providerId]: e.target.value,
                               }))
                             }
+                            className="border border-white"
                             placeholder={`Enter ${provider.name} API key`}
                           />
                         </div>
