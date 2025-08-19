@@ -120,7 +120,7 @@ export function Sidebar({
             variant="ghost"
             size="icon"
             onClick={onOpenSettings}
-            className="h-10 w-10 text-gray-400 hover:bg-gray-800 hover:text-white"
+            className="h-10 w-10 text-gray-400 hover:bg-gray-800 hover:text-white cursor-pointer"
             title="Settings"
           >
             <Key className="h-4 w-4" />
@@ -171,7 +171,7 @@ export function Sidebar({
             <Button
               variant="ghost"
               onClick={onOpenSettings}
-              className="w-full justify-start gap-2 text-white bg-black/50 hover:bg-gray-800 hover:text-white"
+              className="w-full justify-start gap-2 text-white bg-black/50 hover:bg-gray-800 hover:text-white cursor-pointer"
             >
               API Keys
               <Key className="h-4 w-4" />
@@ -179,7 +179,7 @@ export function Sidebar({
 
             <Button
               onClick={onNewChat}
-              className="w-full justify-start gap-2 bg-purple-600 text-white hover:bg-purple-700 rounded-lg"
+              className="w-full justify-start gap-2 bg-purple-600 text-white hover:bg-purple-700 rounded-lg cursor-pointer"
             >
               <Plus className="h-4 w-4" />
               New Chat
