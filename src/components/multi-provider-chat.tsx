@@ -781,7 +781,7 @@ export const MultiProviderChat = forwardRef<
                         }}
                         disabled={!isAvailable}
                         className={cn(
-                          "w-full h-7 text-xs gap-1 bg-transparent border-gray-600 text-gray-300 hover:bg-gray-800",
+                          "w-full h-7 text-xs gap-1 bg-transparent border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white",
                           chatState.singleProviderMode === providerId &&
                             "bg-blue-600 border-blue-600 text-white",
                           !isAvailable && "opacity-50 cursor-not-allowed"
