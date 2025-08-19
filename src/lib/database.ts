@@ -1,5 +1,4 @@
 import type { ApiKey, Project, Chat, Message, AIProvider } from "./types";
-import { encrypt, decrypt } from "@/utils/crypto";
 
 // localStorage-based storage with JSON serialization
 class Database {
@@ -42,14 +41,8 @@ class Database {
 
   // API Keys
   async getApiKeys(): Promise<ApiKey[]> {
-    return this.getFromStorage<ApiKey>(this.STORAGE_KEYS.API_KEYS).map(
-      (key) => {
-        const decryptedKey = decrypt(key.key); // decrypt only here
-        return this.parseDates({
-          ...key,
-          key: decryptedKey,
-        });
-      }
+    return this.getFromStorage<ApiKey>(this.STORAGE_KEYS.API_KEYS).map((key) =>
+      this.parseDates(key)
     );
   }
 
@@ -58,14 +51,14 @@ class Database {
     return apiKeys.find((key) => key.provider === provider) || null;
   }
 
-  async setApiKey(provider: AIProvider, rawKey: string): Promise<void> {
+  async setApiKey(provider: AIProvider, key: string): Promise<void> {
     const apiKeys = await this.getApiKeys();
     const existingIndex = apiKeys.findIndex((k) => k.provider === provider);
 
     const apiKey: ApiKey = {
       id: crypto.randomUUID(),
       provider,
-      key: encrypt(rawKey), // 🔐 encrypt before storing
+      key,
       createdAt: new Date(),
     };
 
@@ -75,7 +68,6 @@ class Database {
       apiKeys.push(apiKey);
     }
 
-    // save encrypted keys
     this.saveToStorage(this.STORAGE_KEYS.API_KEYS, apiKeys);
   }
 
