@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
-import { MessageCircle, Loader2, ChevronDown, ChevronUp } from "lucide-react"
+import { MessageCircle, Loader2, ChevronDown, ChevronRight} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { AI_PROVIDERS } from "@/lib/ai-providers"
 import { db } from "@/lib/database"
@@ -517,7 +517,7 @@ export const MultiProviderChat = forwardRef<
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 min-h-0 overflow-hidden">
         <div className="flex h-full">
           {(Object.keys(AI_PROVIDERS) as AIProvider[]).map((providerId) => {
             const provider = AI_PROVIDERS[providerId]
@@ -533,13 +533,13 @@ export const MultiProviderChat = forwardRef<
               <div
                 key={providerId}
                 className={cn(
-                  "flex flex-col border-r border-gray-800 bg-gray-900 last:border-r-0 transition-all duration-300",
+                  "flex flex-col min-h-0 border-r border-gray-800 bg-gray-900 last:border-r-0 transition-all duration-300",
                   isCollapsed ? "w-12 min-w-12" : "flex-1 min-w-0",
                 )}
               >
                 {isCollapsed ? (
                   <div
-                    className="flex-1 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-800 transition-colors"
+                    className="flex-1 flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-gray-800 transition-colors"
                     onClick={() => handleToggleCollapse(providerId)}
                   >
                     <div
@@ -553,7 +553,7 @@ export const MultiProviderChat = forwardRef<
                     <div className="transform -rotate-90 whitespace-nowrap text-xs text-gray-400 font-medium">
                       {provider.name}
                     </div>
-                    <ChevronDown className="h-4 w-4 text-gray-400 mt-2" />
+                    <ChevronRight className="h-4 w-4 text-gray-400 mt-2" />
                   </div>
                 ) : (
                   <>
@@ -573,14 +573,14 @@ export const MultiProviderChat = forwardRef<
                         disabled={!isAvailable}
                         className="scale-75"
                       />
-                                            <button
-                         onClick={() => handleToggleCollapse(providerId)}
-                         className="text-gray-400 hover:text-white transition-colors"
-                         aria-label="Collapse panel"
-                         title="Collapse"
-                       >
-                         <ChevronUp className="h-4 w-4" />
-                       </button>
+                      <button
+                        onClick={() => handleToggleCollapse(providerId)}
+                        className="text-gray-400 hover:text-white transition-colors"
+                        aria-label="Collapse panel"
+                        title="Collapse"
+                      >
+                        <ChevronDown className="h-4 w-4" />
+                      </button>
                     </div>
 
                     <div className="px-3 py-2 border-b border-gray-800">
@@ -602,7 +602,7 @@ export const MultiProviderChat = forwardRef<
                             <div className="border-t border-gray-700 mt-1 pt-1">
                               <div className="px-2 py-1">
                                 <Input
-                                  placeholder="Add another model..."
+                                  placeholder="Add custom model..."
                                   className="h-6 text-xs bg-gray-700 border-gray-600 text-gray-200"
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
@@ -649,7 +649,7 @@ export const MultiProviderChat = forwardRef<
                     </div>
 
                     <div className="flex-1 flex flex-col min-h-0">
-                      <ScrollArea className="flex-1">
+                      <ScrollArea className="flex-1 h-full">
                         {providerMessages.length === 0 && !isStreaming ? (
                           <div className="flex flex-col items-center justify-center h-full text-gray-500 p-8">
                             <MessageCircle className="h-12 w-12 mb-3 opacity-30" />

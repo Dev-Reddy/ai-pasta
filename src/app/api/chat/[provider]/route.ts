@@ -77,7 +77,7 @@ export async function POST(req: Request, context: any) {
 		const result = await streamText({
 			model: buildModel(provider, modelId, apiKey),
 			messages: formattedMessages,
-			temperature: 0.7,
+			temperature: 1.0,
 		})
 
 		return result.toUIMessageStreamResponse()

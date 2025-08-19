@@ -100,9 +100,12 @@ export function ChatInterface() {
     setCurrentProjectId(undefined)
   }
 
-  const handleSelectProject = (projectId: string) => {
+  const handleSelectProject = async (projectId: string) => {
     setCurrentProjectId(projectId)
-    setCurrentChatId(undefined)
+    // Create and select a new chat for this project to enable sending immediately
+    const chat = await db.createChat("New Chat", projectId)
+    setChats((prev) => [chat, ...prev])
+    setCurrentChatId(chat.id)
   }
 
   return (
