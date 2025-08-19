@@ -13,6 +13,7 @@ import { Eye, EyeOff, Trash2 } from "lucide-react"
 import { AI_PROVIDERS } from "@/lib/ai-providers"
 import { db } from "@/lib/database"
 import type { AIProvider, ApiKey } from "@/lib/types"
+import Image from "next/image"
 
 interface SettingsDialogProps {
   open: boolean
@@ -113,11 +114,10 @@ export function SettingsDialog({ open, onOpenChange, onApiKeysUpdated, onApiKeyS
                       <div className="flex items-center gap-3">
                         <div
                           className={cn(
-                            "flex h-8 w-8 items-center justify-center rounded-full text-white text-xs font-medium",
-                            provider.color,
+                            "flex h-8 w-8 items-center justify-center rounded-full text-white text-xs font-medium bg-white",
                           )}
                         >
-                          {provider.icon}
+                          <Image src={provider.icon} alt={provider.name} width={32} height={32} />
                         </div>
                         <div>
                           <CardTitle className="text-base">{provider.name}</CardTitle>

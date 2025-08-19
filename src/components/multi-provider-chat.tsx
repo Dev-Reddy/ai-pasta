@@ -7,13 +7,15 @@ import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
-import { MessageCircle, Loader2, ChevronDown, ChevronRight} from "lucide-react"
+import { MessageCircle, Loader2, ChevronDown, ChevronRight, Github} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { AI_PROVIDERS } from "@/lib/ai-providers"
 import { db } from "@/lib/database"
 import { UnifiedChatInput } from "./unified-chat-input"
 import type { AIProvider, ChatState, Project, Message } from "@/lib/types"
 import { SMALL_MODEL_ID } from "@/lib/model-mapping"
+import Image from "next/image"
+import Link from "next/link"
 
 interface MultiProviderChatProps {
   currentChatId?: string
@@ -529,6 +531,22 @@ export const MultiProviderChat = forwardRef<
             </h1>
             <p className="text-sm text-gray-400">{currentProject ? currentProject.name : "No project selected"}</p>
           </div>
+          <div className="flex items-center">
+            <Button
+              asChild
+              className="flex items-center gap-2 rounded-xl border border-white/30 bg-black text-white 
+                        hover:bg-white hover:text-black transition-all"
+            >
+              <Link
+                href="https://github.com/Dev-Reddy/ai-pasta"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Github className="h-5 w-5" />
+                <span className="text-base font-medium">GitHub</span>
+              </Link>
+            </Button>
+    </div>
         </div>
       </div>
 
@@ -557,14 +575,19 @@ export const MultiProviderChat = forwardRef<
                     className="flex-1 flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-gray-800 transition-colors"
                     onClick={() => handleToggleCollapse(providerId)}
                   >
-                    <div
+                    {/* <div
                       className={cn(
                         "flex h-6 w-6 items-center justify-center rounded-full text-white text-xs font-bold mb-2",
                         provider.color,
                       )}
                     >
                       {provider.icon}
+                    </div> */}
+                    
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full text-white text-xs font-bold mb-2 bg-white">
+                      <Image src={provider.icon} alt={provider.name} width={24} height={24} />
                     </div>
+
                     <div className="transform -rotate-90 whitespace-nowrap text-xs text-gray-400 font-medium">
                       {provider.name}
                     </div>
@@ -573,14 +596,19 @@ export const MultiProviderChat = forwardRef<
                 ) : (
                   <>
                     <div className="flex items-center gap-2 p-3 border-b border-gray-800">
-                      <div
+                      {/* <div
                         className={cn(
                           "flex h-6 w-6 items-center justify-center rounded-full text-white text-xs font-bold",
                           provider.color,
                         )}
                       >
                         {provider.icon}
+                      </div> */}
+
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full text-white text-xs font-bold bg-white">
+                        <Image src={provider.icon} alt={provider.name} width={24} height={24} />
                       </div>
+
                       <span className="text-sm font-medium text-white flex-1 min-w-0 truncate">{provider.name}</span>
                       <Switch
                         checked={isEnabled && isAvailable}
