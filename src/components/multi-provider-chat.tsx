@@ -1,26 +1,38 @@
 // components/ui/multi-provider-chat.tsx
-"use client"
+"use client";
 
-import { useState, useEffect, forwardRef, useImperativeHandle } from "react"
-import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Input } from "@/components/ui/input"
-import { MessageCircle, Loader2, ChevronDown, ChevronRight, Github} from "lucide-react"
-import { cn } from "@/lib/utils"
-import { AI_PROVIDERS } from "@/lib/ai-providers"
-import { db } from "@/lib/database"
-import { UnifiedChatInput } from "./unified-chat-input"
-import type { AIProvider, ChatState, Project, Message } from "@/lib/types"
-import { SMALL_MODEL_ID } from "@/lib/model-mapping"
-import Image from "next/image"
-import Link from "next/link"
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import {
+  MessageCircle,
+  Loader2,
+  ChevronDown,
+  ChevronRight,
+  Github,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { AI_PROVIDERS } from "@/lib/ai-providers";
+import { db } from "@/lib/database";
+import { UnifiedChatInput } from "./unified-chat-input";
+import type { AIProvider, ChatState, Project, Message } from "@/lib/types";
+import { SMALL_MODEL_ID } from "@/lib/model-mapping";
+import Image from "next/image";
+import Link from "next/link";
 
 interface MultiProviderChatProps {
-  currentChatId?: string
-  currentProjectId?: string
-  availableProviders: AIProvider[]
+  currentChatId?: string;
+  currentProjectId?: string;
+  availableProviders: AIProvider[];
 }
 
 export const MultiProviderChat = forwardRef<
@@ -30,13 +42,19 @@ export const MultiProviderChat = forwardRef<
   const [chatState, setChatState] = useState<ChatState>({
     activeProviders: availableProviders,
     selectedModels: Object.fromEntries(
-      Object.entries(AI_PROVIDERS).map(([key, config]) => [key, config.defaultModel]),
+      Object.entries(AI_PROVIDERS).map(([key, config]) => [
+        key,
+        config.defaultModel,
+      ])
     ) as Record<AIProvider, string>,
     isEnabled: Object.fromEntries(
-      Object.keys(AI_PROVIDERS).map((key) => [key, availableProviders.includes(key as AIProvider)]),
+      Object.keys(AI_PROVIDERS).map((key) => [
+        key,
+        availableProviders.includes(key as AIProvider),
+      ])
     ) as Record<AIProvider, boolean>,
     singleProviderMode: null,
-  })
+  });
 
   // Turn on toggles for providers with API keys on initial render and when keys change
   useEffect(() => {
@@ -44,16 +62,23 @@ export const MultiProviderChat = forwardRef<
       ...prev,
       activeProviders: availableProviders,
       isEnabled: Object.fromEntries(
-        Object.keys(AI_PROVIDERS).map((key) => [key, availableProviders.includes(key as AIProvider)]),
+        Object.keys(AI_PROVIDERS).map((key) => [
+          key,
+          availableProviders.includes(key as AIProvider),
+        ])
       ) as Record<AIProvider, boolean>,
       // If currently in single provider mode that is no longer available, reset to multi
-      singleProviderMode: prev.singleProviderMode && availableProviders.includes(prev.singleProviderMode)
-        ? prev.singleProviderMode
-        : null,
-    }))
-  }, [availableProviders])
+      singleProviderMode:
+        prev.singleProviderMode &&
+        availableProviders.includes(prev.singleProviderMode)
+          ? prev.singleProviderMode
+          : null,
+    }));
+  }, [availableProviders]);
 
-  const [collapsedChats, setCollapsedChats] = useState<Record<AIProvider, boolean>>(() => {
+  const [collapsedChats, setCollapsedChats] = useState<
+    Record<AIProvider, boolean>
+  >(() => {
     const initialState: Record<AIProvider, boolean> = {
       openai: false,
       claude: false,
@@ -61,21 +86,23 @@ export const MultiProviderChat = forwardRef<
       grok: false,
       deepseek: false,
       perplexity: false,
-    }
+    };
 
-    return initialState
-  })
+    return initialState;
+  });
 
-  const [customModels, setCustomModels] = useState<Record<AIProvider, string[]>>({
+  const [customModels, setCustomModels] = useState<
+    Record<AIProvider, string[]>
+  >({
     openai: [],
     claude: [],
     gemini: [],
     grok: [],
     deepseek: [],
     perplexity: [],
-  })
+  });
 
-  const [currentProject, setCurrentProject] = useState<Project | null>(null)
+  const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [messages, setMessages] = useState<Record<AIProvider, Message[]>>({
     openai: [],
     claude: [],
@@ -83,41 +110,47 @@ export const MultiProviderChat = forwardRef<
     grok: [],
     deepseek: [],
     perplexity: [],
-  })
-  const [streamingStates, setStreamingStates] = useState<Record<AIProvider, boolean>>({
+  });
+  const [streamingStates, setStreamingStates] = useState<
+    Record<AIProvider, boolean>
+  >({
     openai: false,
     claude: false,
     gemini: false,
     grok: false,
     deepseek: false,
     perplexity: false,
-  })
-  const [streamingMessages, setStreamingMessages] = useState<Record<AIProvider, string>>({
+  });
+  const [streamingMessages, setStreamingMessages] = useState<
+    Record<AIProvider, string>
+  >({
     openai: "",
     claude: "",
     gemini: "",
     grok: "",
     deepseek: "",
     perplexity: "",
-  })
+  });
 
-  const [previouslyExpandedChats, setPreviouslyExpandedChats] = useState<Record<AIProvider, boolean>>({
+  const [previouslyExpandedChats, setPreviouslyExpandedChats] = useState<
+    Record<AIProvider, boolean>
+  >({
     openai: false,
     claude: false,
     gemini: false,
     grok: false,
     deepseek: false,
     perplexity: false,
-  })
+  });
 
   // Load project data when currentProjectId changes
   useEffect(() => {
     if (currentProjectId) {
-      db.getProject(currentProjectId).then(setCurrentProject)
+      db.getProject(currentProjectId).then(setCurrentProject);
     } else {
-      setCurrentProject(null)
+      setCurrentProject(null);
     }
-  }, [currentProjectId])
+  }, [currentProjectId]);
 
   // Load messages when currentChatId changes
   useEffect(() => {
@@ -130,25 +163,25 @@ export const MultiProviderChat = forwardRef<
           grok: [],
           deepseek: [],
           perplexity: [],
-        }
+        };
 
         msgs.forEach((msg) => {
           // Backward-compat: if user message has no provider, show in all columns; otherwise only in its provider
           if (msg.role === "user") {
             if (msg.provider) {
-              messagesByProvider[msg.provider]?.push(msg)
+              messagesByProvider[msg.provider]?.push(msg);
             } else {
-              ;(Object.keys(messagesByProvider) as AIProvider[]).forEach((p) => {
-                messagesByProvider[p].push(msg)
-              })
+              (Object.keys(messagesByProvider) as AIProvider[]).forEach((p) => {
+                messagesByProvider[p].push(msg);
+              });
             }
           } else if (msg.provider && messagesByProvider[msg.provider]) {
-            messagesByProvider[msg.provider].push(msg)
+            messagesByProvider[msg.provider].push(msg);
           }
-        })
+        });
 
-        setMessages(messagesByProvider)
-      })
+        setMessages(messagesByProvider);
+      });
     } else {
       setMessages({
         openai: [],
@@ -157,15 +190,15 @@ export const MultiProviderChat = forwardRef<
         grok: [],
         deepseek: [],
         perplexity: [],
-      })
+      });
     }
-  }, [currentChatId])
+  }, [currentChatId]);
 
   const handleToggleProvider = (provider: AIProvider) => {
-    if (!availableProviders.includes(provider)) return
+    if (!availableProviders.includes(provider)) return;
 
     setChatState((prev) => {
-      const newEnabled = !prev.isEnabled[provider]
+      const newEnabled = !prev.isEnabled[provider];
 
       return {
         ...prev,
@@ -173,10 +206,11 @@ export const MultiProviderChat = forwardRef<
           ...prev.isEnabled,
           [provider]: newEnabled,
         },
-        singleProviderMode: prev.singleProviderMode === provider ? null : prev.singleProviderMode,
-      }
-    })
-  }
+        singleProviderMode:
+          prev.singleProviderMode === provider ? null : prev.singleProviderMode,
+      };
+    });
+  };
 
   const handleModelChange = (provider: AIProvider, model: string) => {
     setChatState((prev) => ({
@@ -185,76 +219,86 @@ export const MultiProviderChat = forwardRef<
         ...prev.selectedModels,
         [provider]: model,
       },
-    }))
-  }
+    }));
+  };
 
   const handleAddCustomModel = (provider: AIProvider, modelName: string) => {
-    const trimmedName = modelName.trim()
-    if (!trimmedName) return
+    const trimmedName = modelName.trim();
+    if (!trimmedName) return;
 
     setCustomModels((prev) => ({
       ...prev,
       [provider]: [...prev[provider], trimmedName],
-    }))
+    }));
 
     // Set as selected model
-    handleModelChange(provider, trimmedName)
-  }
+    handleModelChange(provider, trimmedName);
+  };
 
   const handleSingleProviderMode = (provider: AIProvider) => {
     if (!chatState.singleProviderMode) {
-      setPreviouslyExpandedChats({ ...collapsedChats })
+      setPreviouslyExpandedChats({ ...collapsedChats });
     }
 
     setChatState((prev) => ({
       ...prev,
-      singleProviderMode: prev.singleProviderMode === provider ? null : provider,
+      singleProviderMode:
+        prev.singleProviderMode === provider ? null : provider,
       isEnabled: Object.fromEntries(
         Object.keys(AI_PROVIDERS).map((key) => [
           key,
-          key === provider ? true : prev.singleProviderMode === provider ? prev.isEnabled[key as AIProvider] : false,
-        ]),
+          key === provider
+            ? true
+            : prev.singleProviderMode === provider
+            ? prev.isEnabled[key as AIProvider]
+            : false,
+        ])
       ) as Record<AIProvider, boolean>,
-    }))
+    }));
 
     setCollapsedChats(
       (prev) =>
-        Object.fromEntries(Object.keys(AI_PROVIDERS).map((key) => [key, key === provider ? false : true])) as Record<
-          AIProvider,
-          boolean
-        >,
-    )
-  }
+        Object.fromEntries(
+          Object.keys(AI_PROVIDERS).map((key) => [
+            key,
+            key === provider ? false : true,
+          ])
+        ) as Record<AIProvider, boolean>
+    );
+  };
 
   const handleBackToMultiAI = () => {
     // Restore previously expanded chats
-    setCollapsedChats({ ...previouslyExpandedChats })
+    setCollapsedChats({ ...previouslyExpandedChats });
 
     // Reset to multi-provider mode
     setChatState((prev) => ({
       ...prev,
       singleProviderMode: null,
       isEnabled: Object.fromEntries(
-        Object.keys(AI_PROVIDERS).map((key) => [key, availableProviders.includes(key as AIProvider)]),
+        Object.keys(AI_PROVIDERS).map((key) => [
+          key,
+          availableProviders.includes(key as AIProvider),
+        ])
       ) as Record<AIProvider, boolean>,
-    }))
-  }
+    }));
+  };
 
   const handleToggleCollapse = (provider: AIProvider) => {
     setCollapsedChats((prev) => {
       return {
         ...prev,
         [provider]: !prev[provider],
-      }
-    })
-  }
+      };
+    });
+  };
 
   const handleApiKeySaved = (provider: AIProvider) => {
     // Auto-expand the chat
     setCollapsedChats((prev) => ({
       ...prev,
       [provider]: false,
-    }))
+    }));
 
     // Auto-enable the provider toggle
     setChatState((prev) => ({
@@ -263,81 +307,91 @@ export const MultiProviderChat = forwardRef<
         ...prev.isEnabled,
         [provider]: true,
       },
-    }))
-  }
+    }));
+  };
 
   useImperativeHandle(ref, () => ({
     handleApiKeySaved,
-  }))
+  }));
 
   const getVisibleProviders = () => {
     if (chatState.singleProviderMode) {
-      return [chatState.singleProviderMode]
+      return [chatState.singleProviderMode];
     }
-    return Object.keys(AI_PROVIDERS) as AIProvider[]
-  }
+    return Object.keys(AI_PROVIDERS) as AIProvider[];
+  };
 
-  const visibleProviders = getVisibleProviders()
+  const visibleProviders = getVisibleProviders();
 
   const handleSendMessage = async (messageContent: string) => {
-    if (!currentChatId) return
+    if (!currentChatId) return;
 
     // Determine target providers: single-provider mode or all enabled
     const enabledProviders = (() => {
-      if (chatState.singleProviderMode) return [chatState.singleProviderMode]
+      if (chatState.singleProviderMode) return [chatState.singleProviderMode];
       return Object.entries(chatState.isEnabled)
         .filter(([_, enabled]) => enabled)
-        .map(([provider]) => provider as AIProvider)
-    })()
+        .map(([provider]) => provider as AIProvider);
+    })();
 
     // Store user message separately for each targeted provider
     for (const provider of enabledProviders) {
-      await db.addMessage(currentChatId, messageContent, "user", provider)
+      await db.addMessage(currentChatId, messageContent, "user", provider);
     }
 
     // Send to all enabled providers
     for (const provider of enabledProviders) {
-      sendToProvider(provider, messageContent)
+      sendToProvider(provider, messageContent);
     }
 
     // Refresh messages
-    loadMessages()
+    loadMessages();
 
     // Try to generate a chat title if it's the first message and title looks default
-    const chat = await db.getChat(currentChatId)
+    const chat = await db.getChat(currentChatId);
     if (chat && /new chat/i.test(chat.title)) {
-      generateTitleFromFirstMessage(messageContent)
+      generateTitleFromFirstMessage(messageContent);
     }
-  }
+  };
 
-  const sendToProvider = async (provider: AIProvider, messageContent: string) => {
-    if (!currentChatId) return
+  const sendToProvider = async (
+    provider: AIProvider,
+    messageContent: string
+  ) => {
+    if (!currentChatId) return;
 
-    setStreamingStates((prev) => ({ ...prev, [provider]: true }))
-    setStreamingMessages((prev) => ({ ...prev, [provider]: "" }))
+    setStreamingStates((prev) => ({ ...prev, [provider]: true }));
+    setStreamingMessages((prev) => ({ ...prev, [provider]: "" }));
 
     try {
       // Resolve api key for this provider
-      const apiKeyRecord = await db.getApiKey(provider)
-      const apiKey = apiKeyRecord?.key
+      const apiKeyRecord = await db.getApiKey(provider);
+      const apiKey = apiKeyRecord?.key;
       if (!apiKey) {
-        await db.addMessage(currentChatId, `Error: No API key configured for ${provider}`, "assistant", provider)
-        return
+        await db.addMessage(
+          currentChatId,
+          `Error: No API key configured for ${provider}`,
+          "assistant",
+          provider
+        );
+        return;
       }
 
       // Build provider-specific message history: user messages + assistant messages from this provider only
-      const history = await db.getMessages(currentChatId)
+      const history = await db.getMessages(currentChatId);
       const providerHistory = history
-        .filter((m) =>
-          (m.role === "user" && (m.provider === provider || m.provider === undefined)) ||
-          (m.role === "assistant" && m.provider === provider),
+        .filter(
+          (m) =>
+            (m.role === "user" &&
+              (m.provider === provider || m.provider === undefined)) ||
+            (m.role === "assistant" && m.provider === provider)
         )
-        .map((m) => ({ role: m.role, content: m.content }))
+        .map((m) => ({ role: m.role, content: m.content }));
 
       // Do not append again; it is already stored and included by getMessages ordering
 
-      const systemContext = currentProject?.systemContext || ""
-      const model = chatState.selectedModels[provider]
+      const systemContext = currentProject?.systemContext || "";
+      const model = chatState.selectedModels[provider];
 
       const response = await fetch(`/api/chat/${provider}`, {
         method: "POST",
@@ -348,42 +402,48 @@ export const MultiProviderChat = forwardRef<
           systemContext: currentProjectId ? systemContext : "",
           model,
         }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error(`${provider} API error: ${response.statusText}`)
+        throw new Error(`${provider} API error: ${response.statusText}`);
       }
 
-      const reader = response.body?.getReader()
-      if (!reader) throw new Error("No response body")
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No response body");
 
-      let accumulatedMessage = ""
-      const decoder = new TextDecoder()
+      let accumulatedMessage = "";
+      const decoder = new TextDecoder();
 
       // AI SDK v5 data stream protocol over SSE: lines like "data: {json}"
-      let buffer = ""
-      let errorText: string | null = null
+      let buffer = "";
+      let errorText: string | null = null;
       while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
+        const { done, value } = await reader.read();
+        if (done) break;
 
-        buffer += decoder.decode(value, { stream: true })
-        const parts = buffer.split("\n\n") // SSE frames separated by blank line
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split("\n\n"); // SSE frames separated by blank line
         // Keep last partial in buffer
-        buffer = parts.pop() || ""
+        buffer = parts.pop() || "";
 
         for (const part of parts) {
-          const line = part.trim()
-          if (!line.startsWith("data:")) continue
-          const json = line.slice(5).trim()
-          if (json === "[DONE]") continue
+          const line = part.trim();
+          if (!line.startsWith("data:")) continue;
+          const json = line.slice(5).trim();
+          if (json === "[DONE]") continue;
           try {
-            const data = JSON.parse(json)
+            const data = JSON.parse(json);
             if (data?.type === "text-delta" && typeof data.delta === "string") {
-              accumulatedMessage += data.delta
-              setStreamingMessages((prev) => ({ ...prev, [provider]: accumulatedMessage }))
-            } else if (data?.type === "error" && typeof data.errorText === "string") {
-              errorText = data.errorText
+              accumulatedMessage += data.delta;
+              setStreamingMessages((prev) => ({
+                ...prev,
+                [provider]: accumulatedMessage,
+              }));
+            } else if (
+              data?.type === "error" &&
+              typeof data.errorText === "string"
+            ) {
+              errorText = data.errorText;
             }
           } catch {
             // ignore
@@ -397,41 +457,58 @@ export const MultiProviderChat = forwardRef<
           currentChatId,
           `Error from ${provider}: ${errorText}`,
           "assistant",
-          provider,
-        )
+          provider
+        );
       } else if (accumulatedMessage) {
-        await db.addMessage(currentChatId, accumulatedMessage, "assistant", provider)
+        await db.addMessage(
+          currentChatId,
+          accumulatedMessage,
+          "assistant",
+          provider
+        );
       }
     } catch (error) {
-      console.error(`Error streaming from ${provider}:`, error)
+      console.error(`Error streaming from ${provider}:`, error);
       // Add error message
-      await db.addMessage(currentChatId, `Error: Failed to get response from ${provider}`, "assistant", provider)
+      await db.addMessage(
+        currentChatId,
+        `Error: Failed to get response from ${provider}`,
+        "assistant",
+        provider
+      );
     } finally {
-      setStreamingStates((prev) => ({ ...prev, [provider]: false }))
-      setStreamingMessages((prev) => ({ ...prev, [provider]: "" }))
-      loadMessages()
+      setStreamingStates((prev) => ({ ...prev, [provider]: false }));
+      setStreamingMessages((prev) => ({ ...prev, [provider]: "" }));
+      loadMessages();
     }
-  }
+  };
 
   // Generate chat title using a small model from any available provider API key
   const generateTitleFromFirstMessage = async (firstMessage: string) => {
     try {
       // Determine which provider API key is available in priority order
-      const priority: AIProvider[] = ["openai", "gemini", "claude", "perplexity", "deepseek", "grok"]
-      let chosenProvider: AIProvider | null = null
-      let apiKey: string | null = null
+      const priority: AIProvider[] = [
+        "openai",
+        "gemini",
+        "claude",
+        "perplexity",
+        "deepseek",
+        "grok",
+      ];
+      let chosenProvider: AIProvider | null = null;
+      let apiKey: string | null = null;
       for (const p of priority) {
-        const key = await db.getApiKey(p)
+        const key = await db.getApiKey(p);
         if (key?.key) {
-          chosenProvider = p
-          apiKey = key.key
-          break
+          chosenProvider = p;
+          apiKey = key.key;
+          break;
         }
       }
-      if (!chosenProvider || !apiKey) return
+      if (!chosenProvider || !apiKey) return;
 
       const systemPrompt =
-        "You are a helpful assistant that writes concise chat titles (3-6 words). Do not use quotes or punctuation. Return only the title."
+        "You are a helpful assistant that writes concise chat titles (3-6 words). Do not use quotes or punctuation. Return only the title.";
 
       const response = await fetch(`/api/chat/${chosenProvider}`, {
         method: "POST",
@@ -444,46 +521,46 @@ export const MultiProviderChat = forwardRef<
           apiKey,
           model: SMALL_MODEL_ID[chosenProvider],
         }),
-      })
-      if (!response.ok) return
+      });
+      if (!response.ok) return;
 
-      const reader = response.body?.getReader()
-      if (!reader) return
+      const reader = response.body?.getReader();
+      if (!reader) return;
 
-      let title = ""
-      const decoder = new TextDecoder()
-      let buffer = ""
+      let title = "";
+      const decoder = new TextDecoder();
+      let buffer = "";
       while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        buffer += decoder.decode(value, { stream: true })
-        const parts = buffer.split("\n\n")
-        buffer = parts.pop() || ""
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split("\n\n");
+        buffer = parts.pop() || "";
         for (const part of parts) {
-          const line = part.trim()
-          if (!line.startsWith("data:")) continue
-          const json = line.slice(5).trim()
-          if (json === "[DONE]") continue
+          const line = part.trim();
+          if (!line.startsWith("data:")) continue;
+          const json = line.slice(5).trim();
+          if (json === "[DONE]") continue;
           try {
-            const data = JSON.parse(json)
+            const data = JSON.parse(json);
             if (data?.type === "text-delta" && typeof data.delta === "string") {
-              title += data.delta
+              title += data.delta;
             }
           } catch {}
         }
       }
-      title = (title || "").trim()
+      title = (title || "").trim();
       if (title && currentChatId) {
-        await db.updateChat(currentChatId, { title })
+        await db.updateChat(currentChatId, { title });
       }
     } catch (e) {
       // Best-effort; ignore errors
     }
-  }
+  };
 
   const loadMessages = async () => {
     if (currentChatId) {
-      const msgs = await db.getMessages(currentChatId)
+      const msgs = await db.getMessages(currentChatId);
       const messagesByProvider: Record<AIProvider, Message[]> = {
         openai: [],
         claude: [],
@@ -491,33 +568,33 @@ export const MultiProviderChat = forwardRef<
         grok: [],
         deepseek: [],
         perplexity: [],
-      }
+      };
 
       msgs.forEach((msg) => {
         if (msg.role === "user") {
           if (msg.provider) {
-            messagesByProvider[msg.provider]?.push(msg)
+            messagesByProvider[msg.provider]?.push(msg);
           } else {
-            ;(Object.keys(messagesByProvider) as AIProvider[]).forEach((p) => {
-              messagesByProvider[p].push(msg)
-            })
+            (Object.keys(messagesByProvider) as AIProvider[]).forEach((p) => {
+              messagesByProvider[p].push(msg);
+            });
           }
         } else if (msg.provider && messagesByProvider[msg.provider]) {
-          messagesByProvider[msg.provider].push(msg)
+          messagesByProvider[msg.provider].push(msg);
         }
-      })
+      });
 
-      setMessages(messagesByProvider)
+      setMessages(messagesByProvider);
     }
-  }
+  };
 
   const getEnabledProviders = () => {
     return Object.entries(chatState.isEnabled)
       .filter(([_, enabled]) => enabled)
-      .map(([provider]) => provider as AIProvider)
-  }
+      .map(([provider]) => provider as AIProvider);
+  };
 
-  const isAnyProviderStreaming = Object.values(streamingStates).some(Boolean)
+  const isAnyProviderStreaming = Object.values(streamingStates).some(Boolean);
 
   return (
     <div className="flex h-full flex-col bg-gray-900">
@@ -526,16 +603,20 @@ export const MultiProviderChat = forwardRef<
           <div>
             <h1 className="text-lg font-medium text-white">
               {chatState.singleProviderMode
-                ? `Chatting with ${AI_PROVIDERS[chatState.singleProviderMode].name}`
+                ? `Chatting with ${
+                    AI_PROVIDERS[chatState.singleProviderMode].name
+                  }`
                 : "Multi-AI Chat"}
             </h1>
-            <p className="text-sm text-gray-400">{currentProject ? currentProject.name : "No project selected"}</p>
+            <p className="text-sm text-gray-400">
+              {currentProject ? currentProject.name : "No project selected"}
+            </p>
           </div>
           <div className="flex items-center">
             <Button
               asChild
               className="flex items-center gap-2 rounded-xl border border-white/30 bg-black text-white 
-                        hover:bg-white hover:text-black transition-all"
+                   hover:bg-white hover:text-black transition-all"
             >
               <Link
                 href="https://github.com/Dev-Reddy/ai-pasta"
@@ -546,28 +627,28 @@ export const MultiProviderChat = forwardRef<
                 <span className="text-base font-medium">GitHub</span>
               </Link>
             </Button>
-    </div>
+          </div>
         </div>
       </div>
 
       <div className="flex-1 min-h-0 overflow-hidden">
         <div className="flex h-full">
           {(Object.keys(AI_PROVIDERS) as AIProvider[]).map((providerId) => {
-            const provider = AI_PROVIDERS[providerId]
-            const isAvailable = availableProviders.includes(providerId)
-            const isEnabled = chatState.isEnabled[providerId]
-            const isCollapsed = collapsedChats[providerId]
-            const providerMessages = messages[providerId] || []
-            const isStreaming = streamingStates[providerId]
-            const streamingMessage = streamingMessages[providerId]
-            const allModels = [...provider.models, ...customModels[providerId]]
+            const provider = AI_PROVIDERS[providerId];
+            const isAvailable = availableProviders.includes(providerId);
+            const isEnabled = chatState.isEnabled[providerId];
+            const isCollapsed = collapsedChats[providerId];
+            const providerMessages = messages[providerId] || [];
+            const isStreaming = streamingStates[providerId];
+            const streamingMessage = streamingMessages[providerId];
+            const allModels = [...provider.models, ...customModels[providerId]];
 
             return (
               <div
                 key={providerId}
                 className={cn(
                   "flex flex-col min-h-0 border-r border-gray-800 bg-gray-900 last:border-r-0 transition-all duration-300",
-                  isCollapsed ? "w-12 min-w-12" : "flex-1 min-w-0",
+                  isCollapsed ? "w-12 min-w-12" : "flex-1 min-w-0"
                 )}
               >
                 {isCollapsed ? (
@@ -583,9 +664,14 @@ export const MultiProviderChat = forwardRef<
                     >
                       {provider.icon}
                     </div> */}
-                    
+
                     <div className="flex h-6 w-6 items-center justify-center rounded-full text-white text-xs font-bold mb-2 bg-white">
-                      <Image src={provider.icon} alt={provider.name} width={24} height={24} />
+                      <Image
+                        src={provider.icon}
+                        alt={provider.name}
+                        width={24}
+                        height={24}
+                      />
                     </div>
 
                     <div className="transform -rotate-90 whitespace-nowrap text-xs text-gray-400 font-medium">
@@ -606,10 +692,17 @@ export const MultiProviderChat = forwardRef<
                       </div> */}
 
                       <div className="flex h-6 w-6 items-center justify-center rounded-full text-white text-xs font-bold bg-white">
-                        <Image src={provider.icon} alt={provider.name} width={24} height={24} />
+                        <Image
+                          src={provider.icon}
+                          alt={provider.name}
+                          width={24}
+                          height={24}
+                        />
                       </div>
 
-                      <span className="text-sm font-medium text-white flex-1 min-w-0 truncate">{provider.name}</span>
+                      <span className="text-sm font-medium text-white flex-1 min-w-0 truncate">
+                        {provider.name}
+                      </span>
                       <Switch
                         checked={isEnabled && isAvailable}
                         onCheckedChange={() => handleToggleProvider(providerId)}
@@ -630,7 +723,9 @@ export const MultiProviderChat = forwardRef<
                       <div className="space-y-2">
                         <Select
                           value={chatState.selectedModels[providerId]}
-                          onValueChange={(value) => handleModelChange(providerId, value)}
+                          onValueChange={(value) =>
+                            handleModelChange(providerId, value)
+                          }
                           disabled={!isEnabled}
                         >
                           <SelectTrigger className="h-7 text-xs bg-gray-800 border-gray-700 text-gray-300">
@@ -638,7 +733,11 @@ export const MultiProviderChat = forwardRef<
                           </SelectTrigger>
                           <SelectContent>
                             {allModels.map((model) => (
-                              <SelectItem key={model} value={model} className="text-xs">
+                              <SelectItem
+                                key={model}
+                                value={model}
+                                className="text-xs"
+                              >
                                 {model}
                               </SelectItem>
                             ))}
@@ -649,13 +748,19 @@ export const MultiProviderChat = forwardRef<
                                   className="h-6 text-xs bg-gray-700 border-gray-600 text-gray-200"
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-                                      const target = e.target as HTMLInputElement
-                                      handleAddCustomModel(providerId, target.value)
-                                      target.value = ""
+                                      const target =
+                                        e.target as HTMLInputElement;
+                                      handleAddCustomModel(
+                                        providerId,
+                                        target.value
+                                      );
+                                      target.value = "";
                                     }
                                   }}
                                 />
-                                <p className="text-xs text-gray-500 mt-1">Press Enter to add</p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                  Press Enter to add
+                                </p>
                               </div>
                             </div>
                           </SelectContent>
@@ -669,16 +774,17 @@ export const MultiProviderChat = forwardRef<
                         size="sm"
                         onClick={() => {
                           if (chatState.singleProviderMode === providerId) {
-                            handleBackToMultiAI()
+                            handleBackToMultiAI();
                           } else {
-                            handleSingleProviderMode(providerId)
+                            handleSingleProviderMode(providerId);
                           }
                         }}
                         disabled={!isAvailable}
                         className={cn(
                           "w-full h-7 text-xs gap-1 bg-transparent border-gray-600 text-gray-300 hover:bg-gray-800",
-                          chatState.singleProviderMode === providerId && "bg-blue-600 border-blue-600 text-white",
-                          !isAvailable && "opacity-50 cursor-not-allowed",
+                          chatState.singleProviderMode === providerId &&
+                            "bg-blue-600 border-blue-600 text-white",
+                          !isAvailable && "opacity-50 cursor-not-allowed"
                         )}
                       >
                         <MessageCircle className="h-3 w-3" />
@@ -687,7 +793,9 @@ export const MultiProviderChat = forwardRef<
                           : `Chat with ${provider.name} Only`}
                       </Button>
                       {!isAvailable && (
-                        <p className="text-xs text-gray-500 mt-1 text-center">Add API key in settings to enable</p>
+                        <p className="text-xs text-gray-500 mt-1 text-center">
+                          Add API key in settings to enable
+                        </p>
                       )}
                     </div>
 
@@ -707,10 +815,12 @@ export const MultiProviderChat = forwardRef<
                                   "rounded-lg p-3 max-w-[85%] text-sm",
                                   message.role === "user"
                                     ? "bg-blue-600 text-white ml-auto"
-                                    : "bg-gray-800 text-gray-200",
+                                    : "bg-gray-800 text-gray-200"
                                 )}
                               >
-                                <p className="whitespace-pre-wrap">{message.content}</p>
+                                <p className="whitespace-pre-wrap">
+                                  {message.content}
+                                </p>
                               </div>
                             ))}
 
@@ -718,9 +828,15 @@ export const MultiProviderChat = forwardRef<
                               <div className="rounded-lg p-3 max-w-[85%] bg-gray-800 text-gray-200">
                                 <div className="flex items-center gap-2 mb-2">
                                   <Loader2 className="h-3 w-3 animate-spin" />
-                                  <span className="text-xs text-gray-400">Thinking...</span>
+                                  <span className="text-xs text-gray-400">
+                                    Thinking...
+                                  </span>
                                 </div>
-                                {streamingMessage && <p className="text-sm whitespace-pre-wrap">{streamingMessage}</p>}
+                                {streamingMessage && (
+                                  <p className="text-sm whitespace-pre-wrap">
+                                    {streamingMessage}
+                                  </p>
+                                )}
                               </div>
                             )}
                           </div>
@@ -730,7 +846,7 @@ export const MultiProviderChat = forwardRef<
                   </>
                 )}
               </div>
-            )
+            );
           })}
         </div>
       </div>
@@ -741,7 +857,7 @@ export const MultiProviderChat = forwardRef<
         enabledProviders={getEnabledProviders()}
       />
     </div>
-  )
-})
+  );
+});
 
-MultiProviderChat.displayName = "MultiProviderChat"
+MultiProviderChat.displayName = "MultiProviderChat";
