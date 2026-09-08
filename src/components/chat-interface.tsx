@@ -7,6 +7,7 @@ import { MultiProviderChat } from "./multi-provider-chat";
 import { SettingsDialog } from "./settings-dialog";
 import { NewProjectDialog } from "./new-project-dialog";
 import { EditProjectDialog } from "./edit-project-dialog";
+import { InfoDialog } from "./info-dialog";
 import { db } from "@/lib/database";
 import type { Project, Chat, AIProvider } from "@/lib/types";
 
@@ -16,6 +17,7 @@ export function ChatInterface() {
   const [currentChatId, setCurrentChatId] = useState<string>();
   const [currentProjectId, setCurrentProjectId] = useState<string>();
   const [showSettings, setShowSettings] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
   const [showNewProject, setShowNewProject] = useState(false);
   const [showEditProject, setShowEditProject] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
@@ -137,6 +139,7 @@ export function ChatInterface() {
         onSelectProject={handleSelectProject}
         onEditProject={handleEditProject}
         onOpenSettings={() => setShowSettings(true)}
+        onOpenInfo={() => setShowInfo(true)}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
@@ -156,6 +159,8 @@ export function ChatInterface() {
         onApiKeysUpdated={loadData}
         onApiKeySaved={handleApiKeySaved}
       />
+
+      <InfoDialog open={showInfo} onOpenChange={setShowInfo} />
 
       <NewProjectDialog
         open={showNewProject}

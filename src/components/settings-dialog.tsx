@@ -21,7 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AlertTriangle, Eye, EyeOff, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Trash2, CheckCircle2, ShieldCheck } from "lucide-react";
 import { AI_PROVIDERS } from "@/lib/ai-providers";
 import { db } from "@/lib/database";
 import type { AIProvider, ApiKey } from "@/lib/types";
@@ -111,18 +111,18 @@ export function SettingsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[680px] max-h-[88vh] overflow-y-auto border-white/[0.1] bg-[#0b1020] text-slate-100 shadow-2xl shadow-black/40">
         <DialogHeader>
-          <DialogTitle>API Keys</DialogTitle>
-          <DialogDescription>
-            Configure your API keys and application settings.
+          <DialogTitle className="text-xl tracking-tight">API Keys</DialogTitle>
+          <DialogDescription className="text-slate-400">
+            Connect your providers to unlock side-by-side multi-model chat.
             {/* warning div here to tell user that api keys are stored in local storage. use incognito mode to avoid extensions from snooping */}
-            <Alert className="border-red-200 text-red-400 my-2">
-              <AlertTriangle className="h-4 w-4 text-amber-600" />
-              <AlertTitle className="text-amber-800">
+            <Alert className="my-4 border-amber-400/20 bg-amber-400/[0.07] text-amber-100">
+              <ShieldCheck className="h-4 w-4 text-amber-300" />
+              <AlertTitle className="text-amber-100">
                 Security Notice
               </AlertTitle>
-              <AlertDescription className="text-amber-700 mt-2">
+              <AlertDescription className="mt-2 text-amber-100/70">
                 <div className="space-y-2">
                   <p>
                     API keys are stored locally in your browser and can be
@@ -130,8 +130,8 @@ export function SettingsDialog({
                     device.
                   </p>
                   <div className="text-sm">
-                    <strong>For better security:</strong>
-                    <ul className="mt-1 space-y-1 ml-4 list-disc">
+                    <strong className="text-amber-100">For better security:</strong>
+                    <ul className="mt-2 grid gap-1 sm:grid-cols-2 sm:ml-4 list-disc">
                       <li>Use incognito/private browsing mode</li>
                       <li>Create API keys with limited permissions</li>
                       <li>Regularly rotate your API keys</li>
@@ -145,12 +145,12 @@ export function SettingsDialog({
         </DialogHeader>
 
         <Tabs defaultValue="api-keys" className="w-full">
-          <TabsList className="grid w-full grid-cols-1">
-            <TabsTrigger value="api-keys">API Keys</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-1 border border-white/[0.08] bg-white/[0.04]">
+            <TabsTrigger value="api-keys" className="data-[state=active]:bg-violet-500/20 data-[state=active]:text-violet-200">Provider connections</TabsTrigger>
           </TabsList>
 
           <TabsContent value="api-keys" className="space-y-4">
-            <div className="grid gap-4">
+            <div className="grid gap-3 sm:grid-cols-2">
               {Object.entries(AI_PROVIDERS).map(([providerId, provider]) => {
                 const hasExistingKey = existingKeys.some(
                   (key) => key.provider === providerId
@@ -159,12 +159,12 @@ export function SettingsDialog({
                 const isShowingKey = showKeys[providerId as AIProvider];
 
                 return (
-                  <Card key={providerId}>
+                  <Card key={providerId} className="border-white/[0.08] bg-white/[0.035] transition-colors hover:bg-white/[0.055]">
                     <CardHeader className="pb-3">
                       <div className="flex items-center gap-3">
                         <div
                           className={cn(
-                            "flex h-8 w-8 items-center justify-center rounded-full text-white text-xs font-medium bg-white"
+                            "flex h-9 w-9 items-center justify-center rounded-xl text-white text-xs font-medium bg-white shadow-inner"
                           )}
                         >
                           <Image
@@ -175,10 +175,11 @@ export function SettingsDialog({
                           />
                         </div>
                         <div>
-                          <CardTitle className="text-base">
+                          <CardTitle className="text-sm text-slate-100">
                             {provider.name}
                           </CardTitle>
-                          <CardDescription>
+                          <CardDescription className="flex items-center gap-1 text-xs text-slate-500">
+                            {hasExistingKey && <CheckCircle2 className="h-3 w-3 text-emerald-400" />}
                             {hasExistingKey
                               ? "API key configured"
                               : "No API key configured"}
@@ -205,7 +206,7 @@ export function SettingsDialog({
                                 [providerId]: e.target.value,
                               }))
                             }
-                            className="border border-white"
+                            className="h-9 border-white/[0.1] bg-black/20 text-slate-100 placeholder:text-slate-600 focus-visible:ring-violet-500/50"
                             placeholder={`Enter ${provider.name} API key`}
                           />
                         </div>
@@ -213,6 +214,7 @@ export function SettingsDialog({
                           type="button"
                           variant="outline"
                           size="icon"
+                          className="h-9 w-9 border-white/[0.1] bg-white/[0.04] text-slate-400 hover:bg-white/[0.1] hover:text-white"
                           onClick={() =>
                             toggleShowKey(providerId as AIProvider)
                           }
@@ -231,7 +233,7 @@ export function SettingsDialog({
                           }
                           disabled={!currentKey.trim()}
                           size="sm"
-                          className="cursor-pointer"
+                          className="cursor-pointer bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:from-violet-400 hover:to-fuchsia-400"
                         >
                           Save Key
                         </Button>
@@ -242,7 +244,7 @@ export function SettingsDialog({
                             onClick={() =>
                               handleDeleteKey(providerId as AIProvider)
                             }
-                            className="cursor-pointer hover:bg-red-800 hover:text-white"
+                            className="cursor-pointer border-red-400/20 text-red-300 hover:bg-red-500/15 hover:text-red-200"
                           >
                             <Trash2 className="h-4 w-4 mr-1" />
                             Delete

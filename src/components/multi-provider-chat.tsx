@@ -597,26 +597,25 @@ export const MultiProviderChat = forwardRef<
   const isAnyProviderStreaming = Object.values(streamingStates).some(Boolean);
 
   return (
-    <div className="flex h-full flex-col bg-gray-900">
-      <div className="border-b border-gray-800 bg-gray-900 px-6 py-3">
+    <div className="flex h-full flex-col bg-[radial-gradient(circle_at_top_right,#21164a_0%,transparent_34%),#080b18]">
+      <div className="border-b border-white/[0.08] bg-[#080b18]/70 px-6 py-4 backdrop-blur-xl">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-medium text-white">
+            <h1 className="text-lg font-semibold tracking-tight text-white">
               {chatState.singleProviderMode
                 ? `Chatting with ${
                     AI_PROVIDERS[chatState.singleProviderMode].name
                   }`
                 : "Multi-AI Chat"}
             </h1>
-            <p className="text-sm text-gray-400">
+            <p className="mt-1 text-xs text-slate-500">
               {currentProject ? currentProject.name : "No project selected"}
             </p>
           </div>
           <div className="flex items-center">
             <Button
               asChild
-              className="flex items-center gap-2 rounded-xl border border-white/30 bg-black text-white 
-                   hover:bg-white hover:text-black transition-all"
+              className="flex items-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.06] text-slate-200 hover:bg-white/[0.12] hover:text-white transition-all"
             >
               <Link
                 href="https://github.com/Dev-Reddy/ai-pasta"
@@ -647,13 +646,13 @@ export const MultiProviderChat = forwardRef<
               <div
                 key={providerId}
                 className={cn(
-                  "flex flex-col min-h-0 border-r border-gray-800 bg-gray-900 last:border-r-0 transition-all duration-300",
+                  "flex flex-col min-h-0 border-r border-white/[0.08] bg-white/[0.015] last:border-r-0 transition-all duration-300",
                   isCollapsed ? "w-12 min-w-12" : "flex-1 min-w-0"
                 )}
               >
                 {isCollapsed ? (
                   <div
-                    className="flex-1 flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-gray-800 transition-colors"
+                    className="flex-1 flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-white/[0.04] transition-colors"
                     onClick={() => handleToggleCollapse(providerId)}
                   >
                     {/* <div
@@ -674,14 +673,14 @@ export const MultiProviderChat = forwardRef<
                       />
                     </div>
 
-                    <div className="transform -rotate-90 whitespace-nowrap text-xs text-gray-400 font-medium">
+                    <div className="transform -rotate-90 whitespace-nowrap text-[11px] text-slate-500 font-medium uppercase tracking-wider">
                       {provider.name}
                     </div>
                     <ChevronRight className="h-4 w-4 text-gray-400 mt-2" />
                   </div>
                 ) : (
                   <>
-                    <div className="flex items-center gap-2 p-3 border-b border-gray-800">
+                    <div className="flex items-center gap-2 p-3 border-b border-white/[0.08]">
                       {/* <div
                         className={cn(
                           "flex h-6 w-6 items-center justify-center rounded-full text-white text-xs font-bold",
@@ -700,7 +699,7 @@ export const MultiProviderChat = forwardRef<
                         />
                       </div>
 
-                      <span className="text-sm font-medium text-white flex-1 min-w-0 truncate">
+                      <span className="text-sm font-semibold text-slate-100 flex-1 min-w-0 truncate">
                         {provider.name}
                       </span>
                       <Switch
@@ -711,7 +710,7 @@ export const MultiProviderChat = forwardRef<
                       />
                       <button
                         onClick={() => handleToggleCollapse(providerId)}
-                        className="text-gray-400 hover:text-white transition-colors"
+                        className="text-slate-500 hover:text-white transition-colors"
                         aria-label="Collapse panel"
                         title="Collapse"
                       >
@@ -719,7 +718,7 @@ export const MultiProviderChat = forwardRef<
                       </button>
                     </div>
 
-                    <div className="px-3 py-2 border-b border-gray-800">
+                    <div className="px-3 py-2 border-b border-white/[0.08]">
                       <div className="space-y-2">
                         <Select
                           value={chatState.selectedModels[providerId]}
@@ -728,7 +727,7 @@ export const MultiProviderChat = forwardRef<
                           }
                           disabled={!isEnabled}
                         >
-                          <SelectTrigger className="h-7 text-xs bg-gray-800 border-gray-700 text-gray-300">
+                          <SelectTrigger className="h-8 text-xs bg-white/[0.06] border-white/[0.1] text-slate-300">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -768,7 +767,7 @@ export const MultiProviderChat = forwardRef<
                       </div>
                     </div>
 
-                    <div className="px-3 py-2 border-b border-gray-800">
+                    <div className="px-3 py-2 border-b border-white/[0.08]">
                       <Button
                         variant="outline"
                         size="sm"
@@ -781,9 +780,9 @@ export const MultiProviderChat = forwardRef<
                         }}
                         disabled={!isAvailable}
                         className={cn(
-                          "w-full h-7 text-xs gap-1 bg-transparent border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white",
+                          "w-full h-8 text-xs gap-1 bg-white/[0.04] border-white/[0.1] text-slate-300 hover:bg-white/[0.1] hover:text-white",
                           chatState.singleProviderMode === providerId &&
-                            "bg-blue-600 border-blue-600 text-white",
+                            "bg-violet-600 border-violet-500 text-white",
                           !isAvailable && "opacity-50 cursor-not-allowed"
                         )}
                       >
@@ -803,8 +802,9 @@ export const MultiProviderChat = forwardRef<
                       <ScrollArea className="flex-1 h-full">
                         {providerMessages.length === 0 && !isStreaming ? (
                           <div className="flex flex-col items-center justify-center h-full text-gray-500 p-8">
-                            <MessageCircle className="h-12 w-12 mb-3 opacity-30" />
-                            <p className="text-sm">No messages yet</p>
+                            <div className="mb-3 rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4"><MessageCircle className="h-7 w-7 text-violet-300" /></div>
+                            <p className="text-sm text-slate-300">Ready when you are</p>
+                            <p className="mt-1 text-center text-xs text-slate-600">Send a prompt to compare this model</p>
                           </div>
                         ) : (
                           <div className="space-y-3 p-3">
@@ -812,10 +812,10 @@ export const MultiProviderChat = forwardRef<
                               <div
                                 key={message.id}
                                 className={cn(
-                                  "rounded-lg p-3 max-w-[85%] text-sm",
+                                  "rounded-2xl p-3 max-w-[88%] text-sm shadow-lg shadow-black/10",
                                   message.role === "user"
-                                    ? "bg-blue-600 text-white ml-auto"
-                                    : "bg-gray-800 text-gray-200"
+                                    ? "bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white ml-auto"
+                                    : "border border-white/[0.08] bg-white/[0.06] text-slate-200"
                                 )}
                               >
                                 <p className="whitespace-pre-wrap">
@@ -825,7 +825,7 @@ export const MultiProviderChat = forwardRef<
                             ))}
 
                             {isStreaming && (
-                              <div className="rounded-lg p-3 max-w-[85%] bg-gray-800 text-gray-200">
+                              <div className="rounded-2xl border border-violet-400/20 bg-violet-500/[0.08] p-3 max-w-[88%] text-slate-200">
                                 <div className="flex items-center gap-2 mb-2">
                                   <Loader2 className="h-3 w-3 animate-spin" />
                                   <span className="text-xs text-gray-400">

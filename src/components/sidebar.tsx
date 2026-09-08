@@ -1,7 +1,6 @@
 // components/ui/sidebar.tsx
 "use client";
 
-import icon from "@/assets/icon.png";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -20,6 +19,7 @@ import {
   Edit,
   Key,
   ChevronFirst,
+  Info,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -42,6 +42,7 @@ interface SidebarProps {
   onSelectProject: (projectId: string) => void;
   onEditProject: (project: Project) => void;
   onOpenSettings: () => void;
+  onOpenInfo: () => void;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
 }
@@ -57,6 +58,7 @@ export function Sidebar({
   onSelectProject,
   onEditProject,
   onOpenSettings,
+  onOpenInfo,
   isCollapsed = false,
   onToggleCollapse,
 }: SidebarProps) {
@@ -71,26 +73,26 @@ export function Sidebar({
   return (
     <div
       className={cn(
-        "flex h-full flex-col bg-gray-900 border-r border-gray-800 transition-all duration-300",
+        "flex h-full flex-col bg-[#080b18]/95 border-r border-white/[0.08] transition-all duration-300",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
-      <div className="flex items-center justify-between p-4 border-b border-gray-800">
+      <div className="flex items-center justify-between p-4 border-b border-white/[0.08]">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="icon"
             onClick={onToggleCollapse}
-            className=" text-gray-400 hover:bg-gray-800 hover:text-white"
+            className="text-slate-400 hover:bg-white/[0.08] hover:text-white"
           >
             {isCollapsed ? (
-              <Image src={icon} alt="Icon" width={16} height={16} />
+              <Image src="/ai-pasta-logo.png" alt="AI Pasta" width={28} height={28} className="rounded-lg" />
             ) : (
-              <Image src={icon} alt="Icon" width={16} height={16} />
+              <Image src="/ai-pasta-logo.png" alt="AI Pasta" width={28} height={28} className="rounded-lg" />
             )}
           </Button>
           {!isCollapsed && (
-            <h1 className="text-lg font-semibold text-white">AI Pasta</h1>
+            <div><h1 className="text-lg font-semibold tracking-tight text-white">AI Pasta</h1><p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Multi-model studio</p></div>
           )}
         </div>
 
@@ -99,7 +101,7 @@ export function Sidebar({
             variant="ghost"
             size="icon"
             onClick={onToggleCollapse}
-            className="h-8 w-8 text-white hover:bg-gray-800 cusor-pointer"
+            className="h-8 w-8 text-slate-400 hover:bg-white/[0.08] hover:text-white"
           >
             <ChevronFirst className="h-4 w-4" />
           </Button>
@@ -111,7 +113,7 @@ export function Sidebar({
           <Button
             onClick={onNewChat}
             size="icon"
-            className="h-10 w-10 bg-purple-600 text-white hover:bg-purple-700"
+            className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-950/40 hover:from-violet-400 hover:to-fuchsia-400"
             title="New Chat"
           >
             <Plus className="h-4 w-4" />
@@ -121,10 +123,14 @@ export function Sidebar({
             variant="ghost"
             size="icon"
             onClick={onOpenSettings}
-            className="h-10 w-10 text-gray-400 hover:bg-gray-800 hover:text-white cursor-pointer"
+            className="h-10 w-10 text-slate-400 hover:bg-white/[0.08] hover:text-white cursor-pointer"
             title="Settings"
           >
             <Key className="h-4 w-4" />
+          </Button>
+
+          <Button variant="ghost" size="icon" onClick={onOpenInfo} className="h-10 w-10 text-gray-400 hover:bg-gray-800 hover:text-white" title="How it works">
+            <Info className="h-4 w-4" />
           </Button>
 
           {projects.length > 0 && <div className="w-8 h-px bg-gray-700 my-2" />}
@@ -172,15 +178,20 @@ export function Sidebar({
             <Button
               variant="ghost"
               onClick={onOpenSettings}
-              className="w-full justify-start gap-2 text-white bg-black/50 hover:bg-gray-800 hover:text-white cursor-pointer"
+              className="w-full justify-start gap-2 text-slate-200 bg-white/[0.06] border border-white/[0.08] hover:bg-white/[0.1] hover:text-white cursor-pointer"
             >
               API Keys
               <Key className="h-4 w-4" />
             </Button>
 
+            <Button variant="ghost" onClick={onOpenInfo} className="w-full justify-start gap-2 text-gray-300 hover:bg-gray-800 hover:text-white">
+              How it works
+              <Info className="h-4 w-4" />
+            </Button>
+
             <Button
               onClick={onNewChat}
-              className="w-full justify-start gap-2 bg-purple-600 text-white hover:bg-purple-700 rounded-lg cursor-pointer"
+              className="w-full justify-start gap-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:from-violet-400 hover:to-fuchsia-400 rounded-xl cursor-pointer shadow-lg shadow-violet-950/30"
             >
               <Plus className="h-4 w-4" />
               New Chat

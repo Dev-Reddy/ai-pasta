@@ -75,11 +75,11 @@ export async function POST(req: Request, context: any) {
 
     // Use the model as provided (official IDs only). If missing, choose a sensible provider-specific default.
     const defaultModelByProvider: Record<string, string> = {
-      openai: "gpt-5",
-      claude: "claude-sonnet-4-20250514",
-      gemini: "gemini-2.5-flash",
-      grok: "grok-4-latest",
-      deepseek: "deepseek-chat",
+      openai: "gpt-5.6-terra",
+      claude: "claude-sonnet-4-6",
+      gemini: "gemini-3.6-flash",
+      grok: "grok-4.6",
+      deepseek: "deepseek-v4-flash",
       perplexity: "sonar-pro",
     };
     const modelId: string =
